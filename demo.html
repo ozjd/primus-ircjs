@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="primus-ircjs.bundle.js"></script>
+  </head>
+  <body>
+    <h1>Hello, world.</h1>
+
+    <script type="text/javascript">
+    const conn = new primusIrcJS('irc.irc7.com', 6697, true)
+      .on('disconnect', () => console.log('*** Disconnected ***'))
+
+      .on('ACTION', (text) => console.log(`* ${ conn.event.nick } ${ text }`))
+      .on('CTCP', (cmd, text) => console.log(`[${ conn.event.nick } ${ cmd }] ${ text }`))
+      .on('CTCPREPLY', (cmd, text) => console.log(`[${ conn.event.nick } ${ cmd } reply] ${ text }`))
+      .on('JOIN', (special) => console.log(`* ${ conn.event.nick } has joined ${ conn.event.target }`))
+      .on('KICK', (reason) => console.log(`${ conn.event.nick } has kicked ${ conn.event.target } out of the chatroom`))
+      .on('KILL', (reason) => console.log(`${ conn.event.nick } has been killed from ${ conn.client.server }`))
+      .on('MODE', (modes) => console.log(`* ${ conn.event.nick } sets mode ${ modes }`))
+      .on('NOTICE', (text) => console.log(`-${ conn.event.nick }- ${ text }`))
+      .on('PART', (message) => console.log(`* ${ conn.event.nick } has left ${ conn.event.target }`))
+      .on('PRIVMSG', (text) => console.log(`<${ conn.event.nick }> ${ text }`))
+
+    conn.showDebug(true)
+    conn.connect((sock) => {
+      console.log('*** Connected ***')
+      conn.send('JOIN %#Test')
+    })
+    window.conn = conn
+    </script>
+  </body>
+</html>
